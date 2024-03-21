@@ -1,8 +1,6 @@
-from typing import List
-
 from docarray import BaseDoc
-from docarray.typing import ImageUrl, NdArray
-from pydantic import Field
+from docarray.typing import ImageUrl
+from docarray.typing import NdArray
 
 
 class ImageUrlDoc(BaseDoc):
@@ -20,4 +18,3 @@ class Detection(BaseDoc):
     score: float
     crop: NdArray
     bbox: NdArray
-

@@ -1,2 +1,2 @@
-transformers~=4.30.0
 timm~=0.9.12
+transformers~=4.30.0

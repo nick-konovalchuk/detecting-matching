@@ -1,13 +1,17 @@
 from typing import List
 
-import tensorflow as tf
 from docarray import DocList
 from docarray.array.doc_vec.doc_vec import TensorFlowTensor
 from docarray.index import InMemoryExactNNIndex
 from docarray.typing import NdArray
-from jina import Executor, requests
+from jina import Executor
+from jina import requests
+import tensorflow as tf
 
-from .doc import LabeledImage, Detection, Match
+from .doc import Detection
+from .doc import LabeledImage
+from .doc import Match
+
 
 REF_IDS = list(range(6))
 REF_LABELS = ["cat"] * 3 + ["dog"] * 3
@@ -22,14 +26,14 @@ REF_URLS = [
 
 
 class SimilaritySearchExecutor(Executor):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.model = tf.keras.applications.EfficientNetB0(include_top=False)
 
         refs = DocList[LabeledImage](
             [
-                LabeledImage(id=id_, label=label, url=url) for id_, label, url in
-                zip(REF_IDS, REF_LABELS, REF_URLS)
+                LabeledImage(id=id_, label=label, url=url)
+                for id_, label, url in zip(REF_IDS, REF_LABELS, REF_URLS)
             ]
         )
 
@@ -37,7 +41,7 @@ class SimilaritySearchExecutor(Executor):
 
         self.index = InMemoryExactNNIndex[LabeledImage](refs)
 
-    def embed(self, images: List[NdArray]):
+    def embed(self, images: List[NdArray]) -> tf.Tensor:
         batch = tf.stack([tf.image.resize(image, (224, 224)) for image in images])
         return tf.reduce_mean(self.model(batch), (1, 2))
 
@@ -45,9 +49,7 @@ class SimilaritySearchExecutor(Executor):
     def search(self, docs: DocList[Detection], **kwargs) -> DocList[Match]:
         queries = TensorFlowTensor(self.embed(docs.crop))
         neighbour_groups, score_groups = self.index.find_batched(
-            queries,
-            limit=1,
-            search_field="embedding"
+            queries, limit=1, search_field="embedding"
         )
 
         return DocList[Match](
@@ -58,7 +60,7 @@ class SimilaritySearchExecutor(Executor):
                     parent_id=doc.parent_id,
                     match_url=neighbours[0].url,
                     label=neighbours[0].label,
-                    score=scores.tensor.numpy().item()
+                    score=scores.tensor.numpy().item(),
                 )
                 for doc, neighbours, scores in zip(docs, neighbour_groups, score_groups)
             ]
