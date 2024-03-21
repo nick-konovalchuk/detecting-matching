@@ -2,3 +2,6 @@ services:
   detection:
     build:
       context: detection
+  similarity-search:
+    build:
+      context: similarity_search

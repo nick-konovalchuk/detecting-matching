@@ -1,0 +1,8 @@
+jtype: SimilaritySearchExecutor
+py_modules:
+  - src/__init__.py
+metas:
+  name: SimilaritySearchExecutor
+  description: 
+  url: 
+  keywords: ['']

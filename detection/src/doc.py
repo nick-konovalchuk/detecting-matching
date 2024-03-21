@@ -16,6 +16,8 @@ class DetectionResult(BaseDoc):
 
 
 class Detection(BaseDoc):
-    parent_id: str = Field(default="https://www.purina.co.uk/sites/default/files/2023-03/Hero%20Pedigree%20Cats.jpg")
+    parent_id: str
     score: float
     crop: NdArray
+    bbox: NdArray
+
