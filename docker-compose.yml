@@ -1,0 +1,4 @@
+services:
+  detection:
+    build:
+      context: detection

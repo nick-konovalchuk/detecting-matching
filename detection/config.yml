@@ -1,0 +1,8 @@
+jtype: DetectionExecutor
+py_modules:
+  - src/__init__.py
+metas:
+  name: DetectionExecutor
+  description: 
+  url: 
+  keywords: ['']
